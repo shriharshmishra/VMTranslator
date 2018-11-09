@@ -1,4 +1,5 @@
 import scala.collection.mutable
+import scala.collection.parallel.immutable
 
 /**
   * Base trait which has methods to read parts of the VM command.
@@ -13,9 +14,6 @@ trait Command {
 
   def name: String = parts(0)
 
-  def segment: String = parts(1)
-
-  def index: String = parts(2)
 
   // Basic stack pointer operations.
   def stackPointer: String = "@SP"
@@ -63,6 +61,7 @@ trait Command {
   * Companion object to Command trait. Its apply method create the Command instance for a VM command.
   */
 object Command {
+
   def apply(fileName: String, command: String): Command = {
     val name = command.split(" ")(0)
     if (name == "pop") new PopCommand(fileName, command)
@@ -70,6 +69,7 @@ object Command {
     else if (List("add", "sub").contains(name)) new ArithmeticCommand(command)
     else if (List("and", "or").contains(name)) new BooleanCommand(command)
     else if (List("gt", "lt", "eq").contains(name)) new LogicalCommand(command)
+    else if ("label" == name) new LabelCommand(command)
     else new OneOpCommand(command)
   }
 }
@@ -112,7 +112,7 @@ class LogicalCommand(val fullCommand: String) extends Command {
     List("//" + fullCommand, "//Start VM Command") ::: readSecondOpFromStack ::: decrementSP ::: addressOfFirstOp :::
       ("//Execute Logical Func" :: logicalFunctions(setTrueLabel)(name)) ::: pushFalseToStack :::
       jumpToIncSP(incSPLabel) ::: pushTrueToStack(setTrueLabel) :::
-      incrementSP(incSPLabel) ::: List("//End VM Command")
+      incrementSPWithLabel(incSPLabel) ::: List("//End VM Command")
   }
 
   def readSecondOpFromStack: List[String] = "//Read Second Operand" :: decrementSP ::: List("A=M", "D=M")
@@ -125,7 +125,7 @@ class LogicalCommand(val fullCommand: String) extends Command {
 
   def pushTrueToStack(setTrueLabel: String): List[String] = List("//push true to stack", s"($setTrueLabel)", "@SP", "A=M", "M=-1")
 
-  def incrementSP(incSPLabel: String): List[String] = s"($incSPLabel)" :: incrementSP
+  def incrementSPWithLabel(incSPLabel: String): List[String] = s"($incSPLabel)" :: incrementSP
 
   def logicalFunctions(setTrueLabel: String): Map[String, List[String]] = Map(
     "eq" -> List("D=M-D", s"@$setTrueLabel", "D;JEQ"),
@@ -175,6 +175,9 @@ class OneOpCommand(val fullCommand: String) extends Command {
 
 
 abstract class MemoryCommand extends Command {
+
+  def segment: String = if (parts.size > 1) parts(1) else null
+  def index: String = if (parts.size > 2) parts(2) else null
 
   def fileName: String
 
