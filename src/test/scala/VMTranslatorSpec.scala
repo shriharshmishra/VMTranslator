@@ -62,4 +62,8 @@ class VMTranslatorSpec extends  FlatSpec {
   "VMTranslator" should "execute parse BasicLoop.vm and convert to asm" in {
     VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/08/ProgramFlow/BasicLoop/BasicLoop.vm"))
   }
+
+  "VMTranslator" should "execute parse FibonacciSeries.vm and convert to asm" in {
+    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/08/ProgramFlow/FibonacciSeries/FibonacciSeries.vm"))
+  }
 }
