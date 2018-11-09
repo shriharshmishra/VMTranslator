@@ -2,10 +2,26 @@ import org.scalatest.FlatSpec
 
 class CommandSpec extends FlatSpec {
 
-  "Command" should " create new PushCommand which parses parts properly " in {
+//  "Command" should " create new PushCommand which parses parts properly " in {
+//
+//    val pop = new PopCommand("Foo", "pop local 2")
+//
+//    pop.convert.foreach(println)
+//  }
 
-    val pop = new PopCommand("Foo", "pop local 2")
+  "Command" should " create a new LabelCommand when VM code has a label" in {
+    assert(Command("filename", "lable LOOP_START").isInstanceOf[LabelCommand])
+  }
 
-    pop.convert.foreach(println)
+  "LabelCommand" should " convert when VM code to assembly" in {
+    assert(Command("filename", "lable LOOP_START").convert === List("(LOOP_START)"))
+  }
+
+  "Command" should " create a new IfGotCommand when VM code has a label" in {
+    assert(Command("filename", "if-goto LOOP_START").isInstanceOf[IfGotoCommand])
+  }
+
+  "IfGotoCommand" should " convert when VM code to assembly" in {
+    assert(Command("filename", "if-goto LOOP_START").convert === List("@SP", "A=M", "D=M", "@LOOP_START", "D;JGT"))
   }
 }

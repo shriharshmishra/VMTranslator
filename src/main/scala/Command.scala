@@ -248,3 +248,16 @@ class PopCommand(val fileName: String, val fullCommand: String) extends MemoryCo
 
   private def readFromStack: List[String] = List("A=M", "D=M")
 }
+
+class LabelCommand(val fullCommand: String) extends Command {
+  override def convert: List[String] = List(s"// $fullCommand", s"(${parts(1)})")
+}
+
+class IfGotoCommand(val fullCommand: String) extends Command {
+
+  def readFromStack = List(stackPointer, "A=M", "D=M")
+  def loadLabelAddress = List(s"@${parts(1)}")
+  def jumpIfGTZ = List("D; JGT")
+
+  override def convert: List[String] = "//"+ fullCommand :: readFromStack ::: loadLabelAddress ::: jumpIfGTZ
+}
