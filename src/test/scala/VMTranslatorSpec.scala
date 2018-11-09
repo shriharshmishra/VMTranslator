@@ -40,7 +40,7 @@ class VMTranslatorSpec extends  FlatSpec {
   }
 
   "VMTranslator" should "execute parse BasicTest.vm and convert to asm" in {
-    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/07/MemoryAccess/BasicTest/BasicTest"))
+    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/07/MemoryAccess/BasicTest/BasicTest.vm"))
   }
 
   "VMTranslator" should "execute parse StaticTest.vm and convert to asm" in {
@@ -56,6 +56,10 @@ class VMTranslatorSpec extends  FlatSpec {
   }
 
   "VMTranslator" should "execute parse StackTest.vm and convert to asm" in {
-    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/07/StackArithmetic/StackTest/StackTest"))
+    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/07/StackArithmetic/StackTest/StackTest.vm"))
+  }
+
+  "VMTranslator" should "execute parse BasicLoop.vm and convert to asm" in {
+    VMTranslator.main(Array("/machines/xenial64/Nand2Tetris/projects/08/ProgramFlow/BasicLoop/BasicLoop.vm"))
   }
 }

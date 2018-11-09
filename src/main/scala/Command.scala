@@ -257,11 +257,11 @@ class LabelCommand(val fullCommand: String) extends Command {
 
 class IfGotoCommand(val fullCommand: String) extends Command {
 
-  def readFromStack = List(stackPointer, "A=M", "D=M")
+  def popFromStackToD = "//Read from stack to D" :: decrementSP ::: List(stackPointer, "A=M", "D=M")
   def loadLabelAddress = List(s"@${parts(1)}")
   def jumpIfGTZ = List("D;JGT")
 
-  override def convert: List[String] = "//"+ fullCommand :: readFromStack ::: loadLabelAddress ::: jumpIfGTZ
+  override def convert: List[String] = "//"+ fullCommand :: popFromStackToD ::: loadLabelAddress ::: jumpIfGTZ
 }
 
 class GotoCommand(val fullCommand: String) extends Command {
