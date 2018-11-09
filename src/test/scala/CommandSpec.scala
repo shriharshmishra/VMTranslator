@@ -25,4 +25,14 @@ class CommandSpec extends FlatSpec {
     assert(Command("filename", "if-goto LOOP_START").convert ===
       List("//if-goto LOOP_START","@SP", "A=M", "D=M", "@LOOP_START", "D;JGT"))
   }
+
+  "Command" should " create a new GotoCommand when VM code has a label" in {
+    assert(Command("filename", "goto LOOP_START").isInstanceOf[GotoCommand])
+  }
+
+  "GotoCommand" should " convert when VM code to assembly" in {
+    assert(Command("filename", "goto LOOP_START").convert ===
+      List("//goto LOOP_START","@LOOP_START", "0;JMP"))
+  }
+
 }
