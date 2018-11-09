@@ -70,6 +70,8 @@ object Command {
     else if (List("and", "or").contains(name)) new BooleanCommand(command)
     else if (List("gt", "lt", "eq").contains(name)) new LogicalCommand(command)
     else if ("label" == name) new LabelCommand(command)
+    else if ("if-goto" == name) new IfGotoCommand(command)
+    else if ("goto" == name) new IfGotoCommand(command)
     else new OneOpCommand(command)
   }
 }
@@ -257,7 +259,7 @@ class IfGotoCommand(val fullCommand: String) extends Command {
 
   def readFromStack = List(stackPointer, "A=M", "D=M")
   def loadLabelAddress = List(s"@${parts(1)}")
-  def jumpIfGTZ = List("D; JGT")
+  def jumpIfGTZ = List("D;JGT")
 
   override def convert: List[String] = "//"+ fullCommand :: readFromStack ::: loadLabelAddress ::: jumpIfGTZ
 }
